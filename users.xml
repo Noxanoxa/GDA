@@ -3,17 +3,26 @@
     <user>
         <username>amrisamer54@gmail.com</username>
         <password>password123</password>
+        <role>user</role>
     </user>
     <user>
         <username>amrisamer06@gmail.com</username>
         <password>password123</password>
+        <role>user</role>
     </user>
     <user>
         <username>hanaben07@gmail.com</username>
         <password>hana123</password>
+        <role>user</role>
     </user>
     <user>
         <username>samer1@gmail.com</username>
         <password>samer1</password>
+        <role>user</role>
+    </user>
+    <user>
+        <username>sameramri55@gmail.com</username>
+        <password>samer55</password>
+        <role>admin</role>
     </user>
 </users>

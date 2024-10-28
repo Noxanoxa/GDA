@@ -7,11 +7,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class to handle XML read/write operations.
+ */
 public class XMLHandler {
     private static final String USERS_FILE = "users.xml";
     private static final String PRODUCTS_FILE = "products.xml";
 
-    // Method to read users from XML
+    /**
+     * Reads users from the XML file.
+     * @return A list of users.
+     */
     public List<User> readUsers() {
         List<User> users = new ArrayList<>();
         try {
@@ -30,7 +36,8 @@ public class XMLHandler {
                     Element eElement = (Element) nNode;
                     String username = eElement.getElementsByTagName("username").item(0).getTextContent();
                     String password = eElement.getElementsByTagName("password").item(0).getTextContent();
-                    User user = new User(username, password);
+                    String role = eElement.getElementsByTagName("role").item(0).getTextContent();
+                    User user = role.equals("admin") ? new Admin(username, password) : new User(username, password, role);
 
                     NodeList productNodes = eElement.getElementsByTagName("product");
                     for (int i = 0; i < productNodes.getLength(); i++) {
@@ -51,7 +58,10 @@ public class XMLHandler {
         return users;
     }
 
-    // Method to write users to XML
+    /**
+     * Writes users to the XML file.
+     * @param users The list of users to write.
+     */
     public void writeUsers(List<User> users) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -71,6 +81,10 @@ public class XMLHandler {
                 Element password = doc.createElement("password");
                 password.appendChild(doc.createTextNode(user.getPassword()));
                 userElement.appendChild(password);
+
+                Element role = doc.createElement("role");
+                role.appendChild(doc.createTextNode(user.getRole()));
+                userElement.appendChild(role);
 
                 for (Product product : user.getProducts()) {
                     Element productElement = doc.createElement("product");
@@ -104,7 +118,10 @@ public class XMLHandler {
         }
     }
 
-    // Method to read products from XML
+    /**
+     * Reads products from the XML file.
+     * @return A list of products.
+     */
     public List<Product> readProducts() {
         List<Product> products = new ArrayList<>();
         try {
@@ -135,7 +152,10 @@ public class XMLHandler {
         return products;
     }
 
-    // Method to write products to XML
+    /**
+     * Writes products to the XML file.
+     * @param products The list of products to write.
+     */
     public void writeProducts(List<Product> products) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+/**
+ * Main class to handle the GUI and main application logic.
+ */
 public class Main {
     private AuthService authService;
     private ProductService productService;
@@ -20,6 +23,9 @@ public class Main {
         });
     }
 
+    /**
+     * Initializes and displays the main GUI.
+     */
     public void createAndShowGUI() {
         XMLHandler xmlHandler = new XMLHandler();
         authService = new AuthService(xmlHandler);
@@ -29,7 +35,15 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
 
-        // Login screen
+        showLoginScreen(frame);
+        frame.setVisible(true);
+    }
+
+    /**
+     * Displays the login screen.
+     * @param frame The main application frame.
+     */
+    public void showLoginScreen(JFrame frame) {
         JPanel loginPane = new JPanel(new GridLayout(4, 2));
         JTextField emailField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
@@ -45,65 +59,127 @@ public class Main {
         loginPane.add(new JLabel(""));
         loginPane.add(registerButton);
 
+        frame.getContentPane().removeAll();
         frame.add(loginPane);
-        frame.setVisible(true);
+        frame.revalidate();
+        frame.repaint();
 
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = emailField.getText();
-                String password = new String(passwordField.getPassword());
-                User user = authService.login(email, password);
-                if (user != null) {
-                    showProductManagementScreen(frame);
+        loginButton.addActionListener(e -> {
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+            User user = authService.login(email, password);
+            if (user != null) {
+                if (user instanceof Admin) {
+                    showAdminManagementScreen(frame);
                 } else {
-                    showAlert("Error", "Invalid credentials.");
+                    showProductManagementScreen(frame);
                 }
+            } else {
+                JOptionPane.showMessageDialog(frame, "Invalid credentials.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showRegisterForm();
-            }
-        });
+        registerButton.addActionListener(e -> showRegisterForm());
     }
 
+    /**
+     * Displays the registration form.
+     */
     public void showRegisterForm() {
         JFrame registerFrame = new JFrame("Register");
         registerFrame.setSize(300, 200);
-        registerFrame.setLayout(new GridLayout(3, 2));
+        registerFrame.setLayout(new GridLayout(4, 2));
 
         JTextField emailField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"user", "admin"});
         JButton registerButton = new JButton("Register");
 
         registerFrame.add(new JLabel("Email:"));
         registerFrame.add(emailField);
         registerFrame.add(new JLabel("Password:"));
         registerFrame.add(passwordField);
+        registerFrame.add(new JLabel("Role:"));
+        registerFrame.add(roleComboBox);
         registerFrame.add(new JLabel(""));
         registerFrame.add(registerButton);
 
         registerFrame.setVisible(true);
 
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = emailField.getText();
-                String password = new String(passwordField.getPassword());
-                boolean success = authService.register(email, password);
-                if (success) {
-                    showAlert("Success", "User registered successfully.");
-                    registerFrame.dispose();
-                } else {
-                    showAlert("Error", "User already exists.");
-                }
+        registerButton.addActionListener(e -> {
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+            String role = (String) roleComboBox.getSelectedItem();
+            boolean success = authService.register(email, password, role);
+            if (success) {
+                JOptionPane.showMessageDialog(registerFrame, "Registration successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                registerFrame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(registerFrame, "User already exists.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
 
+    /**
+     * Displays the admin management screen.
+     * @param frame The main application frame.
+     */
+    public void showAdminManagementScreen(JFrame frame) {
+        JPanel adminPane = new JPanel();
+        adminPane.setLayout(new BoxLayout(adminPane, BoxLayout.Y_AXIS));
+        JButton showAllProductsButton = new JButton("Show All Products");
+        JButton showAllUsersButton = new JButton("Show All Users");
+        JButton logoutButton = new JButton("Logout");
+
+        adminPane.add(showAllProductsButton);
+        adminPane.add(showAllUsersButton);
+        adminPane.add(logoutButton);
+
+        frame.getContentPane().removeAll();
+        frame.add(adminPane);
+        frame.revalidate();
+        frame.repaint();
+
+        productListModel = new DefaultListModel<>();
+        productList = new JList<>(productListModel);
+
+        showAllProductsButton.addActionListener(e -> showAllProducts());
+        showAllUsersButton.addActionListener(e -> showAllUsers());
+        logoutButton.addActionListener(e -> {
+            authService.logout();
+            showLoginScreen(frame);
+        });
+    }
+
+    /**
+     * Displays all products for the admin.
+     */
+    private void showAllProducts() {
+        List<Product> products = ((Admin) authService.getCurrentUser()).showAllProducts(new XMLHandler());
+        productListModel.clear();
+        for (Product product : products) {
+            productListModel.addElement(product.getId() + " - " + product.getName() + " - $" + product.getPrice());
+        }
+        JOptionPane.showMessageDialog(null, new JScrollPane(productList), "All Products", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Displays all users for the admin.
+     */
+    private void showAllUsers() {
+        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new XMLHandler());
+        DefaultListModel<String> userListModel = new DefaultListModel<>();
+        JList<String> userList = new JList<>(userListModel);
+        for (User user : users) {
+            userListModel.addElement(user.getUsername() + " - " + user.getRole());
+        }
+        JOptionPane.showMessageDialog(null, new JScrollPane(userList), "All Users", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Displays the product management screen.
+     * @param frame The main application frame.
+     */
     public void showProductManagementScreen(JFrame frame) {
         JPanel productPane = new JPanel();
         productPane.setLayout(new BoxLayout(productPane, BoxLayout.Y_AXIS));
@@ -136,65 +212,39 @@ public class Main {
 
         refreshProductList();
 
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showAddForm();
+        addButton.addActionListener(e -> showAddForm());
+        editButton.addActionListener(e -> {
+            int selectedIndex = productList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                String selectedProduct = productListModel.getElementAt(selectedIndex);
+                showEditForm(selectedProduct);
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please select a product to edit.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedIndex = productList.getSelectedIndex();
-                if (selectedIndex != -1) {
-                    String selectedProduct = productListModel.getElementAt(selectedIndex);
-                    showEditForm(selectedProduct);
-                } else {
-                    showAlert("Error", "No product selected.");
-                }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedIndex = productList.getSelectedIndex();
-                if (selectedIndex != -1) {
-                    String selectedProduct = productListModel.getElementAt(selectedIndex);
-                    String productId = selectedProduct.split(" - ")[0];
-                    productService.deleteProduct(productId);
-                    refreshProductList();
-                } else {
-                    showAlert("Error", "No product selected.");
-                }
-            }
-        });
-
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String query = searchField.getText();
-                searchProducts(query);
-            }
-        });
-
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        deleteButton.addActionListener(e -> {
+            int selectedIndex = productList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                String selectedProduct = productListModel.getElementAt(selectedIndex);
+                String[] productDetails = selectedProduct.split(" - ");
+                String productId = productDetails[0];
+                productService.deleteProduct(productId);
                 refreshProductList();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please select a product to delete.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        logoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                authService.logout();
-                authService.showLoginScreen(frame);
-            }
+        searchButton.addActionListener(e -> searchProducts(searchField.getText()));
+        backButton.addActionListener(e -> refreshProductList());
+        logoutButton.addActionListener(e -> {
+            authService.logout();
+            showLoginScreen(frame);
         });
     }
 
+    /**
+     * Displays the form to add a new product.
+     */
     private void showAddForm() {
         JFrame addFrame = new JFrame("Add Product");
         addFrame.setSize(300, 200);
@@ -213,21 +263,22 @@ public class Main {
 
         addFrame.setVisible(true);
 
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                double price = Double.parseDouble(priceField.getText());
-                String userId = authService.getCurrentUser().getUsername();
-                Product newProduct = new Product(null, name, price, userId);
-                productService.createProduct(newProduct);
-                showAlert("Success", "Product added successfully.");
-                refreshProductList();
-                addFrame.dispose();
-            }
+        saveButton.addActionListener(e -> {
+            String name = nameField.getText();
+            double price = Double.parseDouble(priceField.getText());
+            String userId = authService.getCurrentUser().getUsername();
+            Product newProduct = new Product(null, name, price, userId);
+            productService.createProduct(newProduct);
+            showAlert("Success", "Product added successfully.");
+            refreshProductList();
+            addFrame.dispose();
         });
     }
 
+    /**
+     * Displays the form to edit an existing product.
+     * @param selectedProduct The selected product to edit.
+     */
     private void showEditForm(String selectedProduct) {
         JFrame editFrame = new JFrame("Edit Product");
         editFrame.setSize(300, 200);
@@ -251,21 +302,21 @@ public class Main {
 
         editFrame.setVisible(true);
 
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String newName = nameField.getText();
-                double newPrice = Double.parseDouble(priceField.getText());
-                String userId = authService.getCurrentUser().getUsername();
-                Product updatedProduct = new Product(productId, newName, newPrice, userId);
-                productService.editProduct(updatedProduct);
-                showAlert("Success", "Product updated successfully.");
-                refreshProductList();
-                editFrame.dispose();
-            }
+        saveButton.addActionListener(e -> {
+            String newName = nameField.getText();
+            double newPrice = Double.parseDouble(priceField.getText());
+            String userId = authService.getCurrentUser().getUsername();
+            Product updatedProduct = new Product(productId, newName, newPrice, userId);
+            productService.editProduct(updatedProduct);
+            showAlert("Success", "Product updated successfully.");
+            refreshProductList();
+            editFrame.dispose();
         });
     }
 
+    /**
+     * Refreshes the product list displayed in the GUI.
+     */
     private void refreshProductList() {
         productListModel.clear();
         List<Product> products = productService.getAllProducts();
@@ -278,6 +329,10 @@ public class Main {
         }
     }
 
+    /**
+     * Searches for products based on the query and updates the product list.
+     * @param query The search query.
+     */
     private void searchProducts(String query) {
         productListModel.clear();
         List<Product> products = productService.searchProducts(query);
@@ -290,6 +345,11 @@ public class Main {
         }
     }
 
+    /**
+     * Displays an alert dialog with the specified title and message.
+     * @param title The title of the alert.
+     * @param message The message of the alert.
+     */
     private void showAlert(String title, String message) {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }

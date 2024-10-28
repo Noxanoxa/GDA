@@ -71,20 +71,54 @@ public class AuthService {
      * @param frame The main application frame.
      */
     public void showLoginScreen(JFrame frame) {
-        JPanel loginPane = new JPanel(new GridLayout(4, 2));
+        JPanel loginPane = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         JTextField emailField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Register");
 
-        loginPane.add(new JLabel("Email:"));
-        loginPane.add(emailField);
-        loginPane.add(new JLabel("Password:"));
-        loginPane.add(passwordField);
-        loginPane.add(new JLabel(""));
-        loginPane.add(loginButton);
-        loginPane.add(new JLabel(""));
-        loginPane.add(registerButton);
+        emailField.setPreferredSize(new Dimension(200, 25));
+        passwordField.setPreferredSize(new Dimension(200, 25));
+        loginButton.setPreferredSize(new Dimension(100, 30));
+        registerButton.setPreferredSize(new Dimension(100, 30));
+
+        emailField.setBackground(Color.LIGHT_GRAY);
+        passwordField.setBackground(Color.LIGHT_GRAY);
+        loginButton.setBackground(Color.DARK_GRAY);
+        loginButton.setForeground(Color.WHITE);
+        registerButton.setBackground(Color.DARK_GRAY);
+        registerButton.setForeground(Color.WHITE);
+
+        Font font = new Font("Arial", Font.PLAIN, 14);
+        emailField.setFont(font);
+        passwordField.setFont(font);
+        loginButton.setFont(font);
+        registerButton.setFont(font);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        loginPane.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;
+        loginPane.add(emailField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        loginPane.add(new JLabel("Password:"), gbc);
+        gbc.gridx = 1;
+        loginPane.add(passwordField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        loginPane.add(loginButton, gbc);
+
+        gbc.gridy = 3;
+        loginPane.add(registerButton, gbc);
 
         frame.getContentPane().removeAll();
         frame.add(loginPane);
@@ -98,7 +132,11 @@ public class AuthService {
                 String password = new String(passwordField.getPassword());
                 User user = login(email, password);
                 if (user != null) {
-                    new Main().showProductManagementScreen(frame);
+                    if (user instanceof Admin) {
+                        new AdminForms(AuthService.this, new ProductService(xmlHandler, AuthService.this)).showAdminManagementScreen(frame);
+                    } else {
+                        new ProductForms(AuthService.this, new ProductService(xmlHandler, AuthService.this)).showProductManagementScreen(frame);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(frame, "Invalid credentials.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -108,7 +146,7 @@ public class AuthService {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Main().showRegisterForm();
+                new UserForms(AuthService.this, new ProductService(xmlHandler, AuthService.this)).showRegisterForm();
             }
         });
     }

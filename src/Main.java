@@ -2,9 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Main class to handle the GUI and main application logic.
- */
 public class Main {
     private AuthService authService;
     private ProductService productService;
@@ -18,9 +15,6 @@ public class Main {
         });
     }
 
-    /**
-     * Initializes and displays the main GUI.
-     */
     public void createAndShowGUI() {
         XMLHandler xmlHandler = new XMLHandler();
         authService = new AuthService(xmlHandler);
@@ -34,10 +28,6 @@ public class Main {
         frame.setVisible(true);
     }
 
-    /**
-     * Displays the login screen.
-     * @param frame The main application frame.
-     */
     public void showLoginScreen(JFrame frame) {
         JPanel loginPane = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -111,9 +101,6 @@ public class Main {
         registerButton.addActionListener(e -> showRegisterForm());
     }
 
-    /**
-     * Displays the registration form.
-     */
     public void showRegisterForm() {
         JFrame registerFrame = new JFrame("Register");
         registerFrame.setSize(400, 300);
@@ -180,10 +167,6 @@ public class Main {
         });
     }
 
-    /**
-     * Displays the admin management screen.
-     * @param frame The main application frame.
-     */
     public void showAdminManagementScreen(JFrame frame) {
         JPanel adminPane = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -192,22 +175,37 @@ public class Main {
 
         JButton showAllProductsButton = new JButton("Show All Products");
         JButton showAllUsersButton = new JButton("Show All Users");
+        JButton createUserButton = new JButton("Create User");
+        JButton editUserButton = new JButton("Edit User");
+        JButton deleteUserButton = new JButton("Delete User");
         JButton logoutButton = new JButton("Logout");
 
         showAllProductsButton.setPreferredSize(new Dimension(200, 30));
         showAllUsersButton.setPreferredSize(new Dimension(200, 30));
+        createUserButton.setPreferredSize(new Dimension(200, 30));
+        editUserButton.setPreferredSize(new Dimension(200, 30));
+        deleteUserButton.setPreferredSize(new Dimension(200, 30));
         logoutButton.setPreferredSize(new Dimension(200, 30));
 
         showAllProductsButton.setBackground(Color.DARK_GRAY);
         showAllProductsButton.setForeground(Color.WHITE);
         showAllUsersButton.setBackground(Color.DARK_GRAY);
         showAllUsersButton.setForeground(Color.WHITE);
+        createUserButton.setBackground(Color.DARK_GRAY);
+        createUserButton.setForeground(Color.WHITE);
+        editUserButton.setBackground(Color.DARK_GRAY);
+        editUserButton.setForeground(Color.WHITE);
+        deleteUserButton.setBackground(Color.DARK_GRAY);
+        deleteUserButton.setForeground(Color.WHITE);
         logoutButton.setBackground(Color.DARK_GRAY);
         logoutButton.setForeground(Color.WHITE);
 
         Font font = new Font("Arial", Font.PLAIN, 14);
         showAllProductsButton.setFont(font);
         showAllUsersButton.setFont(font);
+        createUserButton.setFont(font);
+        editUserButton.setFont(font);
+        deleteUserButton.setFont(font);
         logoutButton.setFont(font);
 
         gbc.gridx = 0;
@@ -218,6 +216,15 @@ public class Main {
         adminPane.add(showAllUsersButton, gbc);
 
         gbc.gridy = 2;
+        adminPane.add(createUserButton, gbc);
+
+        gbc.gridy = 3;
+        adminPane.add(editUserButton, gbc);
+
+        gbc.gridy = 4;
+        adminPane.add(deleteUserButton, gbc);
+
+        gbc.gridy = 5;
         adminPane.add(logoutButton, gbc);
 
         frame.getContentPane().removeAll();
@@ -230,15 +237,15 @@ public class Main {
 
         showAllProductsButton.addActionListener(e -> showAllProducts());
         showAllUsersButton.addActionListener(e -> showAllUsers());
+        createUserButton.addActionListener(e -> showCreateUserForm());
+        editUserButton.addActionListener(e -> showEditUserForm());
+        deleteUserButton.addActionListener(e -> showDeleteUserForm());
         logoutButton.addActionListener(e -> {
             authService.logout();
             showLoginScreen(frame);
         });
     }
 
-    /**
-     * Displays all products for the admin.
-     */
     private void showAllProducts() {
         List<Product> products = ((Admin) authService.getCurrentUser()).showAllProducts(new XMLHandler());
         productListModel.clear();
@@ -248,9 +255,6 @@ public class Main {
         JOptionPane.showMessageDialog(null, new JScrollPane(productList), "All Products", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    /**
-     * Displays all users for the admin.
-     */
     private void showAllUsers() {
         List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new XMLHandler());
         DefaultListModel<String> userListModel = new DefaultListModel<>();
@@ -261,281 +265,410 @@ public class Main {
         JOptionPane.showMessageDialog(null, new JScrollPane(userList), "All Users", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    /**
-     * Displays the product management screen.
-     * @param frame The main application frame.
-     */
-    public void showProductManagementScreen(JFrame frame) {
-        JPanel productPane = new JPanel(new GridBagLayout());
+    private void showCreateUserForm() {
+        JFrame createUserFrame = new JFrame("Create User");
+        createUserFrame.setSize(400, 300);
+        createUserFrame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JButton addButton = new JButton("Add Product");
-        JButton editButton = new JButton("Edit Product");
-        JButton deleteButton = new JButton("Delete Product");
-        JTextField searchField = new JTextField();
-        JButton searchButton = new JButton("Search");
-        JButton backButton = new JButton("Back");
-        JButton logoutButton = new JButton("Logout");
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"user", "admin"});
+        JButton createButton = new JButton("Create");
 
-        addButton.setPreferredSize(new Dimension(150, 30));
-        editButton.setPreferredSize(new Dimension(150, 30));
-        deleteButton.setPreferredSize(new Dimension(150, 30));
-        searchField.setPreferredSize(new Dimension(200, 25));
-        searchButton.setPreferredSize(new Dimension(100, 30));
-        backButton.setPreferredSize(new Dimension(100, 30));
-        logoutButton.setPreferredSize(new Dimension(100, 30));
+        usernameField.setPreferredSize(new Dimension(200, 25));
+        passwordField.setPreferredSize(new Dimension(200, 25));
+        createButton.setPreferredSize(new Dimension(100, 30));
 
-        addButton.setBackground(Color.DARK_GRAY);
-        addButton.setForeground(Color.WHITE);
-        editButton.setBackground(Color.DARK_GRAY);
-        editButton.setForeground(Color.WHITE);
-        deleteButton.setBackground(Color.DARK_GRAY);
-        deleteButton.setForeground(Color.WHITE);
-        searchField.setBackground(Color.LIGHT_GRAY);
-        searchButton.setBackground(Color.DARK_GRAY);
-        searchButton.setForeground(Color.WHITE);
-        backButton.setBackground(Color.DARK_GRAY);
-        backButton.setForeground(Color.WHITE);
-        logoutButton.setBackground(Color.DARK_GRAY);
-        logoutButton.setForeground(Color.WHITE);
+        usernameField.setBackground(Color.LIGHT_GRAY);
+        passwordField.setBackground(Color.LIGHT_GRAY);
+        createButton.setBackground(Color.DARK_GRAY);
+        createButton.setForeground(Color.WHITE);
 
         Font font = new Font("Arial", Font.PLAIN, 14);
-        addButton.setFont(font);
-        editButton.setFont(font);
-        deleteButton.setFont(font);
-        searchField.setFont(font);
-        searchButton.setFont(font);
-        backButton.setFont(font);
-        logoutButton.setFont(font);
-
-        productListModel = new DefaultListModel<>();
-        productList = new JList<>(productListModel);
-        JScrollPane productScrollPane = new JScrollPane(productList);
+        usernameField.setFont(font);
+        passwordField.setFont(font);
+        createButton.setFont(font);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        productPane.add(productScrollPane, gbc);
-
-        gbc.gridwidth = 1;
-        gbc.gridy = 1;
-        productPane.add(new JLabel("Search:"), gbc);
+        createUserFrame.add(new JLabel("Username:"), gbc);
         gbc.gridx = 1;
-        productPane.add(searchField, gbc);
+        createUserFrame.add(usernameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        createUserFrame.add(new JLabel("Password:"), gbc);
+        gbc.gridx = 1;
+        createUserFrame.add(passwordField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        productPane.add(searchButton, gbc);
+        createUserFrame.add(new JLabel("Role:"), gbc);
+        gbc.gridx = 1;
+        createUserFrame.add(roleComboBox, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        productPane.add(addButton, gbc);
-        gbc.gridx = 1;
-        productPane.add(editButton, gbc);
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        createUserFrame.add(createButton, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        productPane.add(deleteButton, gbc);
+        createUserFrame.setVisible(true);
 
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        productPane.add(backButton, gbc);
-        gbc.gridx = 1;
-        productPane.add(logoutButton, gbc);
-
-        frame.getContentPane().removeAll();
-        frame.add(productPane);
-        frame.revalidate();
-        frame.repaint();
-
-        refreshProductList();
-
-        addButton.addActionListener(e -> showAddForm());
-        editButton.addActionListener(e -> {
-            String selectedProduct = productList.getSelectedValue();
-            if (selectedProduct != null) {
-                showEditForm(selectedProduct);
-            } else {
-                showAlert("Error", "No product selected.");
-            }
-        });
-        deleteButton.addActionListener(e -> {
-            String selectedProduct = productList.getSelectedValue();
-            if (selectedProduct != null) {
-                productService.deleteProduct(selectedProduct.split(" - ")[0]);
-                refreshProductList();
-            } else {
-                showAlert("Error", "No product selected.");
-            }
-        });
-        searchButton.addActionListener(e -> searchProducts(searchField.getText()));
-        backButton.addActionListener(e -> refreshProductList());
-        logoutButton.addActionListener(e -> {
-            authService.logout();
-            showLoginScreen(frame);
+        createButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            String role = (String) roleComboBox.getSelectedItem();
+            ((Admin) authService.getCurrentUser()).createUser(new XMLHandler(), new User(username, password, role));
+            createUserFrame.dispose();
         });
     }
 
-    /**
-     * Displays the form to add a new product.
-     */
+    private void showEditUserForm() {
+        JFrame editUserFrame = new JFrame("Edit User");
+        editUserFrame.setSize(400, 300);
+        editUserFrame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new XMLHandler());
+        JComboBox<String> userComboBox = new JComboBox<>();
+        for (User user : users) {
+            userComboBox.addItem(user.getUsername());
+        }
+
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"user", "admin"});
+        JButton editButton = new JButton("Edit");
+
+        usernameField.setPreferredSize(new Dimension(200, 25));
+        passwordField.setPreferredSize(new Dimension(200, 25));
+        editButton.setPreferredSize(new Dimension(100, 30));
+
+        usernameField.setBackground(Color.LIGHT_GRAY);
+        passwordField.setBackground(Color.LIGHT_GRAY);
+        editButton.setBackground(Color.DARK_GRAY);
+        editButton.setForeground(Color.WHITE);
+
+        Font font = new Font("Arial", Font.PLAIN, 14);
+        usernameField.setFont(font);
+        passwordField.setFont(font);
+        editButton.setFont(font);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        editUserFrame.add(new JLabel("Select User:"), gbc);
+        gbc.gridx = 1;
+        editUserFrame.add(userComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        editUserFrame.add(new JLabel("Username:"), gbc);
+        gbc.gridx = 1;
+        editUserFrame.add(usernameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        editUserFrame.add(new JLabel("Password:"), gbc);
+        gbc.gridx = 1;
+        editUserFrame.add(passwordField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        editUserFrame.add(new JLabel("Role:"), gbc);
+        gbc.gridx = 1;
+        editUserFrame.add(roleComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        editUserFrame.add(editButton, gbc);
+
+        editUserFrame.setVisible(true);
+
+        userComboBox.addActionListener(e -> {
+            String selectedUser = (String) userComboBox.getSelectedItem();
+            for (User user : users) {
+                if (user.getUsername().equals(selectedUser)) {
+                    usernameField.setText(user.getUsername());
+                    passwordField.setText(user.getPassword());
+                    roleComboBox.setSelectedItem(user.getRole());
+                    break;
+                }
+            }
+        });
+
+        editButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            String role = (String) roleComboBox.getSelectedItem();
+            ((Admin) authService.getCurrentUser()).editUser(new XMLHandler(), new User(username, password, role));
+            showAlert("Success", "User edited successfully.");
+            editUserFrame.dispose();
+        });
+    }
+
+    private void showDeleteUserForm() {
+        JFrame deleteUserFrame = new JFrame("Delete User");
+        deleteUserFrame.setSize(400, 300);
+        deleteUserFrame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new XMLHandler());
+        JComboBox<String> userComboBox = new JComboBox<>();
+        for (User user : users) {
+            userComboBox.addItem(user.getUsername());
+        }
+
+        JButton deleteButton = new JButton("Delete");
+
+        userComboBox.setPreferredSize(new Dimension(200, 25));
+        deleteButton.setPreferredSize(new Dimension(100, 30));
+
+        userComboBox.setBackground(Color.LIGHT_GRAY);
+        deleteButton.setBackground(Color.DARK_GRAY);
+        deleteButton.setForeground(Color.WHITE);
+
+        Font font = new Font("Arial", Font.PLAIN, 14);
+        userComboBox.setFont(font);
+        deleteButton.setFont(font);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        deleteUserFrame.add(new JLabel("Select User:"), gbc);
+        gbc.gridx = 1;
+        deleteUserFrame.add(userComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        deleteUserFrame.add(deleteButton, gbc);
+
+        deleteUserFrame.setVisible(true);
+
+        deleteButton.addActionListener(e -> {
+            String username = (String) userComboBox.getSelectedItem();
+            ((Admin) authService.getCurrentUser()).deleteUser(new XMLHandler(), username);
+            showAlert("Success", "User deleted successfully.");
+            deleteUserFrame.dispose();
+        });
+    }
+
     private void showAddForm() {
-        JFrame addFrame = new JFrame("Add Product");
-        addFrame.setSize(400, 300);
-        addFrame.setLayout(new GridBagLayout());
+        JFrame addProductFrame = new JFrame("Add Product");
+        addProductFrame.setSize(400, 300);
+        addProductFrame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JTextField nameField = new JTextField();
         JTextField priceField = new JTextField();
-        JButton saveButton = new JButton("Save");
+        JButton addButton = new JButton("Add");
 
         nameField.setPreferredSize(new Dimension(200, 25));
         priceField.setPreferredSize(new Dimension(200, 25));
-        saveButton.setPreferredSize(new Dimension(100, 30));
+        addButton.setPreferredSize(new Dimension(100, 30));
 
         nameField.setBackground(Color.LIGHT_GRAY);
         priceField.setBackground(Color.LIGHT_GRAY);
-        saveButton.setBackground(Color.DARK_GRAY);
-        saveButton.setForeground(Color.WHITE);
+        addButton.setBackground(Color.DARK_GRAY);
+        addButton.setForeground(Color.WHITE);
 
         Font font = new Font("Arial", Font.PLAIN, 14);
         nameField.setFont(font);
         priceField.setFont(font);
-        saveButton.setFont(font);
+        addButton.setFont(font);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        addFrame.add(new JLabel("Name:"), gbc);
+        addProductFrame.add(new JLabel("Name:"), gbc);
         gbc.gridx = 1;
-        addFrame.add(nameField, gbc);
+        addProductFrame.add(nameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        addFrame.add(new JLabel("Price:"), gbc);
+        addProductFrame.add(new JLabel("Price:"), gbc);
         gbc.gridx = 1;
-        addFrame.add(priceField, gbc);
+        addProductFrame.add(priceField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        addFrame.add(saveButton, gbc);
+        addProductFrame.add(addButton, gbc);
 
-        addFrame.setVisible(true);
+        addProductFrame.setVisible(true);
 
-        saveButton.addActionListener(e -> {
+        addButton.addActionListener(e -> {
             String name = nameField.getText();
             double price = Double.parseDouble(priceField.getText());
-            productService.createProduct(new Product(null, name, price, authService.getCurrentUser().getUsername()));
-            addFrame.dispose();
-            refreshProductList();
+            Product product = new Product(null, name, price, authService.getCurrentUser().getUsername());
+            productService.createProduct(product);
+            addProductFrame.dispose();
+            showProductManagementScreen(addProductFrame);
         });
     }
 
-    /**
-     * Displays the form to edit an existing product.
-     * @param selectedProduct The selected product to edit.
-     */
-    private void showEditForm(String selectedProduct) {
-        JFrame editFrame = new JFrame("Edit Product");
-        editFrame.setSize(400, 300);
-        editFrame.setLayout(new GridBagLayout());
+    private void showEditProductForm() {
+        JFrame editProductFrame = new JFrame("Edit Product");
+        editProductFrame.setSize(400, 300);
+        editProductFrame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        String[] productDetails = selectedProduct.split(" - ");
-        String productId = productDetails[0];
-        String productName = productDetails[1];
-        String productPrice = productDetails[2].substring(1);
+        JTextField idField = new JTextField();
+        JTextField nameField = new JTextField();
+        JTextField priceField = new JTextField();
+        JButton editButton = new JButton("Edit");
 
-        JTextField nameField = new JTextField(productName);
-        JTextField priceField = new JTextField(productPrice);
-        JButton saveButton = new JButton("Save");
-
+        idField.setPreferredSize(new Dimension(200, 25));
         nameField.setPreferredSize(new Dimension(200, 25));
         priceField.setPreferredSize(new Dimension(200, 25));
-        saveButton.setPreferredSize(new Dimension(100, 30));
+        editButton.setPreferredSize(new Dimension(100, 30));
 
+        idField.setBackground(Color.LIGHT_GRAY);
         nameField.setBackground(Color.LIGHT_GRAY);
         priceField.setBackground(Color.LIGHT_GRAY);
-        saveButton.setBackground(Color.DARK_GRAY);
-        saveButton.setForeground(Color.WHITE);
+        editButton.setBackground(Color.DARK_GRAY);
+        editButton.setForeground(Color.WHITE);
 
         Font font = new Font("Arial", Font.PLAIN, 14);
+        idField.setFont(font);
         nameField.setFont(font);
         priceField.setFont(font);
-        saveButton.setFont(font);
+        editButton.setFont(font);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        editFrame.add(new JLabel("Name:"), gbc);
+        editProductFrame.add(new JLabel("Product ID:"), gbc);
         gbc.gridx = 1;
-        editFrame.add(nameField, gbc);
+        editProductFrame.add(idField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        editFrame.add(new JLabel("Price:"), gbc);
+        editProductFrame.add(new JLabel("Name:"), gbc);
         gbc.gridx = 1;
-        editFrame.add(priceField, gbc);
+        editProductFrame.add(nameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
+        editProductFrame.add(new JLabel("Price:"), gbc);
+        gbc.gridx = 1;
+        editProductFrame.add(priceField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        editFrame.add(saveButton, gbc);
+        editProductFrame.add(editButton, gbc);
 
-        editFrame.setVisible(true);
+        editProductFrame.setVisible(true);
 
-        saveButton.addActionListener(e -> {
+        editButton.addActionListener(e -> {
+            String id = idField.getText();
             String name = nameField.getText();
             double price = Double.parseDouble(priceField.getText());
-            productService.editProduct(new Product(productId, name, price, authService.getCurrentUser().getUsername()));
-            editFrame.dispose();
-            refreshProductList();
+            Product product = new Product(id, name, price, authService.getCurrentUser().getUsername());
+            productService.editProduct(product);
+            editProductFrame.dispose();
+            showProductManagementScreen(editProductFrame);
         });
     }
 
-    /**
-     * Refreshes the product list displayed in the GUI.
-     */
-    private void refreshProductList() {
-        productListModel.clear();
+    private void showDeleteProductForm() {
+        JFrame deleteProductFrame = new JFrame("Delete Product");
+        deleteProductFrame.setSize(400, 300);
+        deleteProductFrame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JTextField idField = new JTextField();
+        JButton deleteButton = new JButton("Delete");
+
+        idField.setPreferredSize(new Dimension(200, 25));
+        deleteButton.setPreferredSize(new Dimension(100, 30));
+
+        idField.setBackground(Color.LIGHT_GRAY);
+        deleteButton.setBackground(Color.DARK_GRAY);
+        deleteButton.setForeground(Color.WHITE);
+
+        Font font = new Font("Arial", Font.PLAIN, 14);
+        idField.setFont(font);
+        deleteButton.setFont(font);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        deleteProductFrame.add(new JLabel("Product ID:"), gbc);
+        gbc.gridx = 1;
+        deleteProductFrame.add(idField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        deleteProductFrame.add(deleteButton, gbc);
+
+        deleteProductFrame.setVisible(true);
+
+        deleteButton.addActionListener(e -> {
+            String id = idField.getText();
+            productService.deleteProduct(id);
+            deleteProductFrame.dispose();
+            showProductManagementScreen(deleteProductFrame);
+        });
+    }
+    public void showProductManagementScreen(JFrame frame) {
+        JPanel productPane = new JPanel(new BorderLayout());
+        productListModel = new DefaultListModel<>();
+        productList = new JList<>(productListModel);
+        JScrollPane scrollPane = new JScrollPane(productList);
+
+        JButton addButton = new JButton("Add Product");
+        JButton editButton = new JButton("Edit Product");
+        JButton deleteButton = new JButton("Delete Product");
+        JButton logoutButton = new JButton("Logout");
+
+        JPanel buttonPane = new JPanel();
+        buttonPane.add(addButton);
+        buttonPane.add(editButton);
+        buttonPane.add(deleteButton);
+        buttonPane.add(logoutButton);
+
+        productPane.add(scrollPane, BorderLayout.CENTER);
+        productPane.add(buttonPane, BorderLayout.SOUTH);
+
+        frame.getContentPane().removeAll();
+        frame.add(productPane);
+        frame.revalidate();
+        frame.repaint();
+
+        addButton.addActionListener(e -> showAddForm());
+        editButton.addActionListener(e -> showEditProductForm());
+        deleteButton.addActionListener(e -> showDeleteProductForm());
+        logoutButton.addActionListener(e -> {
+            authService.logout();
+            showLoginScreen(frame);
+        });
+
+        // Load products for the current user
         List<Product> products = productService.getAllProducts();
-        if (products.isEmpty()) {
-            productListModel.addElement("No products found.");
-        } else {
-            for (Product product : products) {
-                productListModel.addElement(product.getId() + " - " + product.getName() + " - $" + product.getPrice());
-            }
-        }
-    }
-
-    /**
-     * Searches for products based on the query and updates the product list.
-     * @param query The search query.
-     */
-    private void searchProducts(String query) {
         productListModel.clear();
-        List<Product> products = productService.searchProducts(query);
-        if (products.isEmpty()) {
-            productListModel.addElement("No products found.");
-        } else {
-            for (Product product : products) {
-                productListModel.addElement(product.getId() + " - " + product.getName() + " - $" + product.getPrice());
-            }
+        for (Product product : products) {
+            productListModel.addElement(product.getName() + " - $" + product.getPrice());
         }
     }
-
-    /**
-     * Displays an alert dialog with the specified title and message.
-     * @param title The title of the alert.
-     * @param message The message of the alert.
-     */
     private void showAlert(String title, String message) {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }

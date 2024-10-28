@@ -15,5 +15,30 @@ public class Admin extends User {
         return xmlHandler.readUsers();
     }
 
-    // Additional admin-specific methods can be added here
+    // Method to create a user
+    public void createUser(XMLHandler xmlHandler, User user) {
+        List<User> users = xmlHandler.readUsers();
+        users.add(user);
+        xmlHandler.writeUsers(users);
+    }
+
+    // Method to edit a user
+    public void editUser(XMLHandler xmlHandler, User user) {
+        List<User> users = xmlHandler.readUsers();
+        for (User u : users) {
+            if (u.getUsername().equals(user.getUsername())) {
+                u.setPassword(user.getPassword());
+                u.setRole(user.getRole());
+                break;
+            }
+        }
+        xmlHandler.writeUsers(users);
+    }
+
+    // Method to delete a user
+    public void deleteUser(XMLHandler xmlHandler, String username) {
+        List<User> users = xmlHandler.readUsers();
+        users.removeIf(u -> u.getUsername().equals(username));
+        xmlHandler.writeUsers(users);
+    }
 }

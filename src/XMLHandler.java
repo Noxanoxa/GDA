@@ -40,7 +40,7 @@ public class XMLHandler {
                     String role = eElement.getElementsByTagName("role").item(0).getTextContent();
                     User user = role.equals("admin") ? new Admin(username, password, email) : new User(username, password, email, role);
 
-                    NodeList productNodes = eElement.getElementsByTagName("product");
+                  /*  NodeList productNodes = eElement.getElementsByTagName("product");
                     for (int i = 0; i < productNodes.getLength(); i++) {
                         Element productElement = (Element) productNodes.item(i);
                         String id = productElement.getElementsByTagName("id").item(0).getTextContent();
@@ -48,7 +48,7 @@ public class XMLHandler {
                         double price = Double.parseDouble(productElement.getElementsByTagName("price").item(0).getTextContent());
                         String userId = productElement.getElementsByTagName("userId").item(0).getTextContent();
                         user.getProducts().add(new Product(id, name, price, userId));
-                    }
+                    }*/
 
                     users.add(user);
                 }
@@ -91,7 +91,7 @@ public class XMLHandler {
                 role.appendChild(doc.createTextNode(user.getRole()));
                 userElement.appendChild(role);
 
-                for (Product product : user.getProducts()) {
+                /*for (Product product : user.getProducts()) {
                     Element productElement = doc.createElement("product");
                     userElement.appendChild(productElement);
 
@@ -110,7 +110,7 @@ public class XMLHandler {
                     Element userId = doc.createElement("userId");
                     userId.appendChild(doc.createTextNode(product.getUserId()));
                     productElement.appendChild(userId);
-                }
+                }*/
             }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

@@ -1,8 +1,8 @@
 import java.util.List;
 
 public class Admin extends User {
-    public Admin(String username, String password) {
-        super(username, password, "admin");
+    public Admin(String username, String password, String email) {
+        super(username, password, email,"admin");
     }
 
     // Method to show all products

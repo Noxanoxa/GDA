@@ -36,8 +36,9 @@ public class XMLHandler {
                     Element eElement = (Element) nNode;
                     String username = eElement.getElementsByTagName("username").item(0).getTextContent();
                     String password = eElement.getElementsByTagName("password").item(0).getTextContent();
+                    String email = eElement.getElementsByTagName("email").item(0).getTextContent();
                     String role = eElement.getElementsByTagName("role").item(0).getTextContent();
-                    User user = role.equals("admin") ? new Admin(username, password) : new User(username, password, role);
+                    User user = role.equals("admin") ? new Admin(username, password, email) : new User(username, password, email, role);
 
                     NodeList productNodes = eElement.getElementsByTagName("product");
                     for (int i = 0; i < productNodes.getLength(); i++) {
@@ -81,6 +82,10 @@ public class XMLHandler {
                 Element password = doc.createElement("password");
                 password.appendChild(doc.createTextNode(user.getPassword()));
                 userElement.appendChild(password);
+
+                Element email = doc.createElement("email"); // New element
+                email.appendChild(doc.createTextNode(user.getEmail()));
+                userElement.appendChild(email);
 
                 Element role = doc.createElement("role");
                 role.appendChild(doc.createTextNode(user.getRole()));

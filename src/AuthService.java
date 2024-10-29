@@ -22,28 +22,39 @@ public class AuthService {
      * @param role The role of the new user.
      * @return true if registration is successful, false if the user already exists.
      */
-    public boolean register(String username, String password, String role) {
+    public boolean register(String username, String password, String email, String role) {
         List<User> users = xmlHandler.readUsers();
         for (User user : users) {
             if (user.getUsername().equals(username)) {
                 return false; // User already exists
             }
         }
-        users.add(new User(username, password, role));
+        users.add(new User(username, password, email, "user")); // Role is set to "user" by default
         xmlHandler.writeUsers(users);
+        return true;
+    }
+
+
+    public boolean isUsernameUnique(String username) {
+        List<User> users = xmlHandler.readUsers();
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return false;
+            }
+        }
         return true;
     }
 
     /**
      * Logs in a user.
-     * @param username The username of the user.
+     * @param email The username of the user.
      * @param password The password of the user.
      * @return The logged-in user, or null if credentials are invalid.
      */
-    public User login(String username, String password) {
+    public User login(String email, String password) {
         List<User> users = xmlHandler.readUsers();
         for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
                 currentUser = user;
                 return user;
             }

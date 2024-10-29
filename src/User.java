@@ -4,16 +4,19 @@ import java.util.List;
 public class User {
     private String username;
     private String password;
+    private String email; // New field
     private List<Product> products;
     private String role;
 
-    public User(String username, String password, String role) {
+    public User(String username, String password, String email, String role) {
         this.username = username;
         this.password = password;
+        this.email = email; // Initialize new field
         this.role = role;
         this.products = new ArrayList<>();
     }
 
+    // Getters and setters for all fields, including the new email field
     public String getUsername() {
         return username;
     }
@@ -28,6 +31,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<Product> getProducts() {

@@ -70,7 +70,7 @@ public class AuthService {
      * Displays the login screen.
      * @param frame The main application frame.
      */
-    public void showLoginScreen(JFrame frame) {
+    /*public void showLoginScreen(JFrame frame) {
         JPanel loginPane = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -149,5 +149,5 @@ public class AuthService {
                 new UserForms(AuthService.this, new ProductService(xmlHandler, AuthService.this)).showRegisterForm();
             }
         });
-    }
+    }*/
 }

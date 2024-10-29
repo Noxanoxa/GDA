@@ -40,5 +40,9 @@ public class Admin extends User {
         List<User> users = xmlHandler.readUsers();
         users.removeIf(u -> u.getUsername().equals(username));
         xmlHandler.writeUsers(users);
+
+        List<Product> products = xmlHandler.readProducts();
+        products.removeIf(p -> p.getUserId().equals(username));
+        xmlHandler.writeProducts(products);
     }
 }

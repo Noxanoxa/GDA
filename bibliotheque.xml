@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bibliotheque>
+    <livres>
+        <livre>
+            <titre>Ice and fire</titre>
+            <isbn>120394913</isbn>
+            <datePublication>2000-11-04</datePublication>
+            <idAuteur>1</idAuteur>
+        </livre>
+        <livre>
+            <titre>Dragons</titre>
+            <isbn>098765432</isbn>
+            <datePublication>2003-01-20</datePublication>
+            <idAuteur>2</idAuteur>
+        </livre>
+        <livre>
+            <titre>Virus</titre>
+            <isbn>123134</isbn>
+            <datePublication>2003-01-20</datePublication>
+            <idAuteur>1</idAuteur>
+        </livre>
+    </livres>
+    <auteurs>
+        <auteur>
+            <id>1</id>
+            <nom>samer</nom>
+            <nationalite>biskra</nationalite>
+        </auteur>
+        <auteur>
+            <id>2</id>
+            <nom>hana</nom>
+            <nationalite>biskra</nationalite>
+        </auteur>
+    </auteurs>
+</bibliotheque>

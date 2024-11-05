@@ -4,7 +4,7 @@ public class Product {
     private double price;
     private String userId;
 
-    // Constructor, getters, and setters
+
     public Product(String id, String name, double price, String userId) {
         this.id = id;
         this.name = name;

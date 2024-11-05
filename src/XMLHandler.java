@@ -7,17 +7,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Utility class to handle XML read/write operations.
- */
+
 public class XMLHandler {
     private static final String USERS_FILE = "users.xml";
     private static final String PRODUCTS_FILE = "products.xml";
 
-    /**
-     * Reads users from the XML file.
-     * @return A list of users.
-     */
     public List<User> readUsers() {
         List<User> users = new ArrayList<>();
         try {
@@ -48,10 +42,7 @@ public class XMLHandler {
         return users;
     }
 
-    /**
-     * Writes users to the XML file.
-     * @param users The list of users to write.
-     */
+
     public void writeUsers(List<User> users) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -80,26 +71,6 @@ public class XMLHandler {
                 role.appendChild(doc.createTextNode(user.getRole()));
                 userElement.appendChild(role);
 
-                /*for (Product product : user.getProducts()) {
-                    Element productElement = doc.createElement("product");
-                    userElement.appendChild(productElement);
-
-                    Element id = doc.createElement("id");
-                    id.appendChild(doc.createTextNode(product.getId()));
-                    productElement.appendChild(id);
-
-                    Element name = doc.createElement("name");
-                    name.appendChild(doc.createTextNode(product.getName()));
-                    productElement.appendChild(name);
-
-                    Element price = doc.createElement("price");
-                    price.appendChild(doc.createTextNode(String.valueOf(product.getPrice())));
-                    productElement.appendChild(price);
-
-                    Element userId = doc.createElement("userId");
-                    userId.appendChild(doc.createTextNode(product.getUserId()));
-                    productElement.appendChild(userId);
-                }*/
             }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -112,10 +83,7 @@ public class XMLHandler {
         }
     }
 
-    /**
-     * Reads products from the XML file.
-     * @return A list of products.
-     */
+
     public List<Product> readProducts() {
         List<Product> products = new ArrayList<>();
         try {
@@ -146,10 +114,6 @@ public class XMLHandler {
         return products;
     }
 
-    /**
-     * Writes products to the XML file.
-     * @param products The list of products to write.
-     */
     public void writeProducts(List<Product> products) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

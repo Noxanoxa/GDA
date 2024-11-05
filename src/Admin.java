@@ -5,24 +5,23 @@ public class Admin extends User {
         super(username, password, email,"admin");
     }
 
-    // Method to show all products
+
     public List<Product> showAllProducts(XMLHandler xmlHandler) {
         return xmlHandler.readProducts();
     }
 
-    // Method to show all users
     public List<User> showAllUsers(XMLHandler xmlHandler) {
         return xmlHandler.readUsers();
     }
 
-    // Method to create a user
+
     public void createUser(XMLHandler xmlHandler, User user) {
         List<User> users = xmlHandler.readUsers();
         users.add(user);
         xmlHandler.writeUsers(users);
     }
 
-    // Method to edit a user
+
     public void editUser(XMLHandler xmlHandler, User user) {
         List<User> users = xmlHandler.readUsers();
         for (User u : users) {
@@ -35,7 +34,6 @@ public class Admin extends User {
         xmlHandler.writeUsers(users);
     }
 
-    // Method to delete a user
     public void deleteUser(XMLHandler xmlHandler, String username) {
         List<User> users = xmlHandler.readUsers();
         users.removeIf(u -> u.getUsername().equals(username));

@@ -10,6 +10,7 @@ public class LibraryManagementView {
     private JButton editBookButton;
     private JButton deleteBookButton;
     private JButton manageAuthorsButton;
+    private JButton switchButton;
 
     public LibraryManagementView() {
         frame = new JFrame("Library Management System");
@@ -26,10 +27,12 @@ public class LibraryManagementView {
         editBookButton = new JButton("Edit Book");
         deleteBookButton = new JButton("Delete Book");
         manageAuthorsButton = new JButton("Manage Authors");
+        switchButton = new JButton("Switch to User Interface");
         buttonPanel.add(addBookButton);
         buttonPanel.add(editBookButton);
         buttonPanel.add(deleteBookButton);
         buttonPanel.add(manageAuthorsButton);
+        buttonPanel.add(switchButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.add(panel);
@@ -70,5 +73,9 @@ public class LibraryManagementView {
 
     public JButton getManageAuthorsButton() {
         return manageAuthorsButton;
+    }
+
+    public JButton getSwitchButton() {
+        return switchButton;
     }
 }

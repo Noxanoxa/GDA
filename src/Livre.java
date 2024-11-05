@@ -42,4 +42,5 @@ public class Livre {
     public void setIdAuteur(int idAuteur) {
         this.idAuteur = idAuteur;
     }
+
 }

@@ -31,7 +31,8 @@ public class XMLHandler {
                     String isbn = eElement.getElementsByTagName("isbn").item(0).getTextContent();
                     String datePublication = eElement.getElementsByTagName("datePublication").item(0).getTextContent();
                     int idAuteur = Integer.parseInt(eElement.getElementsByTagName("idAuteur").item(0).getTextContent());
-                    livres.add(new Livre(titre, isbn, datePublication, idAuteur));
+                    Livre livre = new Livre(titre, isbn, datePublication, idAuteur);
+                    livres.add(livre);
                 }
             }
         } catch (Exception e) {
@@ -66,6 +67,37 @@ public class XMLHandler {
             e.printStackTrace();
         }
         return auteurs;
+    }
+
+    public List<Emprunt> readEmprunts() {
+        List<Emprunt> emprunts = new ArrayList<>();
+        try {
+            File file = new File(BIBLIOTHEQUE_FILE);
+            if (!file.exists()) {
+                return emprunts;
+            }
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(file);
+            doc.getDocumentElement().normalize();
+
+            NodeList nList = doc.getElementsByTagName("emprunt");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    String userId = eElement.getElementsByTagName("userId").item(0).getTextContent();
+                    String isbnLivre = eElement.getElementsByTagName("isbnLivre").item(0).getTextContent();
+                    String dateEmprunt = eElement.getElementsByTagName("dateEmprunt").item(0).getTextContent();
+                    String retourne = eElement.getElementsByTagName("retourne").item(0).getTextContent();
+                    emprunts.add(new Emprunt(userId, isbnLivre, dateEmprunt, retourne));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return emprunts;
     }
 
     public void writeLivres(List<Livre> livres) {
@@ -166,4 +198,68 @@ public class XMLHandler {
             e.printStackTrace();
         }
     }
+
+    public void writeEmprunts(List<Emprunt> emprunts) {
+        try {
+            File file = new File(BIBLIOTHEQUE_FILE);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc;
+
+            if (file.exists()) {
+                doc = dBuilder.parse(file);
+                doc.getDocumentElement().normalize();
+            } else {
+                doc = dBuilder.newDocument();
+                Element rootElement = doc.createElement("bibliotheque");
+                doc.appendChild(rootElement);
+            }
+
+            Node rootElement = doc.getDocumentElement();
+            NodeList empruntsList = doc.getElementsByTagName("emprunts");
+            Element empruntsElement;
+
+            if (empruntsList.getLength() > 0) {
+                empruntsElement = (Element) empruntsList.item(0);
+                while (empruntsElement.hasChildNodes()) {
+                    empruntsElement.removeChild(empruntsElement.getFirstChild());
+                }
+            } else {
+                empruntsElement = doc.createElement("emprunts");
+                rootElement.appendChild(empruntsElement);
+            }
+
+            for (Emprunt emprunt : emprunts) {
+                Element empruntElement = doc.createElement("emprunt");
+                empruntsElement.appendChild(empruntElement);
+
+                Element userId = doc.createElement("userId");
+                userId.appendChild(doc.createTextNode(emprunt.getUserId()));
+                empruntElement.appendChild(userId);
+
+                Element isbnLivre = doc.createElement("isbnLivre");
+                isbnLivre.appendChild(doc.createTextNode(emprunt.getIsbnLivre()));
+                empruntElement.appendChild(isbnLivre);
+
+                Element dateEmprunt = doc.createElement("dateEmprunt");
+                dateEmprunt.appendChild(doc.createTextNode(emprunt.getDateEmprunt()));
+                empruntElement.appendChild(dateEmprunt);
+
+                Element retourne = doc.createElement("retourne");
+                retourne.appendChild(doc.createTextNode(emprunt.getRetourne()));
+                empruntElement.appendChild(retourne);
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(file);
+            transformer.transform(source, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
+

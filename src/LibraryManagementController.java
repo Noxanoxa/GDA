@@ -17,6 +17,7 @@ public class LibraryManagementController {
         view.getEditBookButton().addActionListener(e -> showEditBookForm());
         view.getDeleteBookButton().addActionListener(e -> showDeleteBookForm());
         view.getManageAuthorsButton().addActionListener(e -> showAuthorManagementForm());
+        view.getSwitchButton().addActionListener(e -> switchToUserInterface());
     }
 
     private void loadBooks() {
@@ -194,6 +195,14 @@ public class LibraryManagementController {
             XMLHandler xmlHandler = new XMLHandler();
             AuthorManagementView view = new AuthorManagementView();
             new AuthorManagementController(xmlHandler, view);
+        });
+    }
+    private void switchToUserInterface() {
+        view.getFrame().dispose();
+        SwingUtilities.invokeLater(() -> {
+            XMLHandler xmlHandler = new XMLHandler();
+            UserManagementView view = new UserManagementView();
+            new UserManagementController(xmlHandler, view);
         });
     }
 }

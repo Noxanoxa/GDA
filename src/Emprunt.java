@@ -1,30 +1,30 @@
 public class Emprunt {
-    private String isbn;
-    private String nomUtilisateur;
+    private String userId;
+    private String isbnLivre;
     private String dateEmprunt;
-    private String dateRetour;
+    private String retourne;
 
-    public Emprunt(String isbn, String nomUtilisateur, String dateEmprunt, String dateRetour) {
-        this.isbn = isbn;
-        this.nomUtilisateur = nomUtilisateur;
+    public Emprunt(String userId, String isbnLivre, String dateEmprunt, String retourne) {
+        this.userId = userId;
+        this.isbnLivre = isbnLivre;
         this.dateEmprunt = dateEmprunt;
-        this.dateRetour = dateRetour;
+        this.retourne = retourne;
     }
 
-    public String getIsbn() {
-        return isbn;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getNomUtilisateur() {
-        return nomUtilisateur;
+    public String getIsbnLivre() {
+        return isbnLivre;
     }
 
-    public void setNomUtilisateur(String nomUtilisateur) {
-        this.nomUtilisateur = nomUtilisateur;
+    public void setIsbnLivre(String isbnLivre) {
+        this.isbnLivre = isbnLivre;
     }
 
     public String getDateEmprunt() {
@@ -35,11 +35,12 @@ public class Emprunt {
         this.dateEmprunt = dateEmprunt;
     }
 
-    public String getDateRetour() {
-        return dateRetour;
+    public String getRetourne() {
+        return retourne;
     }
 
-    public void setDateRetour(String dateRetour) {
-        this.dateRetour = dateRetour;
+    public void setRetourne(String retourne) {
+        this.retourne = retourne;
     }
+
 }

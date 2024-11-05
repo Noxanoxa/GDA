@@ -75,6 +75,8 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+
+
     /**
      * Generates a unique ID for a product.
      * @return A unique ID.

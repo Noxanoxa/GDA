@@ -39,17 +39,6 @@ public class XMLHandler {
                     String email = eElement.getElementsByTagName("email").item(0).getTextContent();
                     String role = eElement.getElementsByTagName("role").item(0).getTextContent();
                     User user = role.equals("admin") ? new Admin(username, password, email) : new User(username, password, email, role);
-
-                  /*  NodeList productNodes = eElement.getElementsByTagName("product");
-                    for (int i = 0; i < productNodes.getLength(); i++) {
-                        Element productElement = (Element) productNodes.item(i);
-                        String id = productElement.getElementsByTagName("id").item(0).getTextContent();
-                        String name = productElement.getElementsByTagName("name").item(0).getTextContent();
-                        double price = Double.parseDouble(productElement.getElementsByTagName("price").item(0).getTextContent());
-                        String userId = productElement.getElementsByTagName("userId").item(0).getTextContent();
-                        user.getProducts().add(new Product(id, name, price, userId));
-                    }*/
-
                     users.add(user);
                 }
             }

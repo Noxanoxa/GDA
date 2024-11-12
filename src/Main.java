@@ -36,5 +36,33 @@ public class Main {
         for (Map.Entry<String, Set<String>> entry : wordIndex.entrySet()) {
             System.out.println("Word: " + entry.getKey() + " - Files: " + entry.getValue());
         }
+        List<String> fileNames = new ArrayList<>();
+
+        for (File xmlFile : xmlFiles) {
+            fileNames.add(xmlFile.getName());
+            String textContent = xmlReader.readXMLFile(xmlFile.getAbsolutePath());
+            Map<String, Integer> fileWordIndex = textProcessor.buildWordIndex(textContent);
+
+            for (String word : fileWordIndex.keySet()) {
+                wordIndex.computeIfAbsent(word, k -> new HashSet<>()).add(xmlFile.getName());
+            }
+        }
+
+        Map<String, Map<String, Integer>> wordVectors = new HashMap<>();
+
+        for (String fileName : fileNames) {
+            wordVectors.put(fileName, new HashMap<>());
+        }
+
+        for (String word : wordIndex.keySet()) {
+            for (String fileName : fileNames) {
+                wordVectors.get(fileName).put(word, wordIndex.get(word).contains(fileName) ? 1 : 0);
+            }
+        }
+
+        for (Map.Entry<String, Map<String, Integer>> entry : wordVectors.entrySet()) {
+            System.out.println("File: " + entry.getKey() + " - Vector: " + entry.getValue());
+        }
+
     }
 }

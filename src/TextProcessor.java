@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextProcessor {
+
     public Map<String, Integer> buildWordIndex(String text) {
         Map<String, Integer> wordIndex = new HashMap<>();
         String[] words = text.split("\\s+");

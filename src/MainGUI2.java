@@ -41,12 +41,18 @@ public class MainGUI2 extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
 
         wordIndexTable = new JTable();
+        JScrollPane wordIndexScrollPane = new JScrollPane(wordIndexTable);
+        wordIndexScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbedPane.addTab("Word Index", new JScrollPane(wordIndexTable));
 
         wordVectorTable = new JTable();
+        JScrollPane wordVectorScrollPane = new JScrollPane(wordVectorTable);
+        wordVectorScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbedPane.addTab("Word Vectors", new JScrollPane(wordVectorTable));
 
         categoryMoviesTable = new JTable();
+        JScrollPane categoryMoviesScrollPane = new JScrollPane(categoryMoviesTable);
+        categoryMoviesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbedPane.addTab("Category Movies", new JScrollPane(categoryMoviesTable));
 
         add(tabbedPane, BorderLayout.CENTER);
@@ -132,15 +138,35 @@ public class MainGUI2 extends JFrame {
     }
 
     private void displayWordVectors(Map<String, Set<String>> wordIndex) {
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"File", "Vector"}, 0);
+        Map<String, Map<String, Integer>> wordVectors = new HashMap<>();
+
+        // Initialize the word vectors for each file
+        for (String fileName : wordIndex.keySet()) {
+            wordVectors.put(fileName, new HashMap<>());
+        }
+
+        // Populate the word vectors with the word counts
         for (String word : wordIndex.keySet()) {
-            for (String fileName : wordIndex.get(word)) {
-                model.addRow(new Object[]{fileName, word});
+            for (String fileName : wordVectors.keySet()) {
+                wordVectors.get(fileName).put(word, wordIndex.get(word).contains(fileName) ? 1 : 0);
             }
         }
+
+        // Create table model
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("File");
+        model.addColumn("Vector");
+
+        // Add rows to the table model
+        for (Map.Entry<String, Map<String, Integer>> entry : wordVectors.entrySet()) {
+            String fileName = entry.getKey();
+            String vector = entry.getValue().toString();
+            model.addRow(new Object[]{fileName, vector});
+        }
+
+        // Set the model to the table
         wordVectorTable.setModel(model);
     }
-
     private void displayCategoryMovies(Map<String, List<String>> categoryMovies) {
         DefaultTableModel model = new DefaultTableModel(new Object[]{"Category", "Movies"}, 0);
         for (Map.Entry<String, List<String>> entry : categoryMovies.entrySet()) {
@@ -156,3 +182,4 @@ public class MainGUI2 extends JFrame {
         });
     }
 }
+//D:\Series\films\xmlfiles\100_movies

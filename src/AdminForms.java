@@ -93,7 +93,7 @@ public class AdminForms {
     }
 
     private void showAllUsers() {
-        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new XMLHandler());
+        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new JsonHandler());
         DefaultListModel<String> userListModel = new DefaultListModel<>();
         JList<String> userList = new JList<>(userListModel);
         for (User user : users) {
@@ -170,7 +170,7 @@ public class AdminForms {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
             String role = (String) roleComboBox.getSelectedItem();
-            ((Admin) authService.getCurrentUser()).createUser(new XMLHandler(), new User(username, password,email,  role));
+            ((Admin) authService.getCurrentUser()).createUser(new JsonHandler(), new User(username, password,email,  role));
             createUserFrame.dispose();
         });
     }
@@ -183,7 +183,7 @@ public class AdminForms {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new XMLHandler());
+        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new JsonHandler());
         JComboBox<String> userComboBox = new JComboBox<>();
         for (User user : users) {
             userComboBox.addItem(user.getUsername());
@@ -269,7 +269,7 @@ public class AdminForms {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
             String role = (String) roleComboBox.getSelectedItem();
-            ((Admin) authService.getCurrentUser()).editUser(new XMLHandler(), new User(username, password, email, role));
+            ((Admin) authService.getCurrentUser()).editUser(new JsonHandler(), new User(username, password, email, role));
             showAlert("Success", "User edited successfully.");
             editUserFrame.dispose();
         });
@@ -283,7 +283,7 @@ public class AdminForms {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new XMLHandler());
+        List<User> users = ((Admin) authService.getCurrentUser()).showAllUsers(new JsonHandler());
         JComboBox<String> userComboBox = new JComboBox<>();
         for (User user : users) {
             userComboBox.addItem(user.getUsername());
@@ -318,14 +318,14 @@ public class AdminForms {
 
         deleteButton.addActionListener(e -> {
             String username = (String) userComboBox.getSelectedItem();
-            ((Admin) authService.getCurrentUser()).deleteUser(new XMLHandler(), username);
+            ((Admin) authService.getCurrentUser()).deleteUser(new JsonHandler(), username);
             showAlert("Success", "User deleted successfully.");
             deleteUserFrame.dispose();
         });
     }
 
     private void showAllProducts() {
-        List<Product> products = ((Admin) authService.getCurrentUser()).showAllProducts(new XMLHandler());
+        List<Product> products = ((Admin) authService.getCurrentUser()).showAllProducts(new JsonHandler());
         productListModel.clear();
         for (Product product : products) {
             productListModel.addElement(product.getId() + " - " + product.getName() + " - $" + product.getPrice() + " - " + product.getUserId());

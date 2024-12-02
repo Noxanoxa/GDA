@@ -6,24 +6,24 @@ public class Admin extends User {
     }
 
 
-    public List<Product> showAllProducts(XMLHandler xmlHandler) {
-        return xmlHandler.readProducts();
+    public List<Product> showAllProducts(JsonHandler jsonHandler) {
+        return jsonHandler.readProducts();
     }
 
-    public List<User> showAllUsers(XMLHandler xmlHandler) {
-        return xmlHandler.readUsers();
+    public List<User> showAllUsers(JsonHandler jsonHandler) {
+        return jsonHandler.readUsers();
     }
 
 
-    public void createUser(XMLHandler xmlHandler, User user) {
-        List<User> users = xmlHandler.readUsers();
+    public void createUser(JsonHandler jsonHandler, User user) {
+        List<User> users = jsonHandler.readUsers();
         users.add(user);
-        xmlHandler.writeUsers(users);
+        jsonHandler.writeUsers(users);
     }
 
 
-    public void editUser(XMLHandler xmlHandler, User user) {
-        List<User> users = xmlHandler.readUsers();
+    public void editUser(JsonHandler jsonHandler, User user) {
+        List<User> users = jsonHandler.readUsers();
         for (User u : users) {
             if (u.getUsername().equals(user.getUsername())) {
                 u.setPassword(user.getPassword());
@@ -31,16 +31,16 @@ public class Admin extends User {
                 break;
             }
         }
-        xmlHandler.writeUsers(users);
+        jsonHandler.writeUsers(users);
     }
 
-    public void deleteUser(XMLHandler xmlHandler, String username) {
-        List<User> users = xmlHandler.readUsers();
+    public void deleteUser(JsonHandler jsonHandler, String username) {
+        List<User> users = jsonHandler.readUsers();
         users.removeIf(u -> u.getUsername().equals(username));
-        xmlHandler.writeUsers(users);
+        jsonHandler.writeUsers(users);
 
-        List<Product> products = xmlHandler.readProducts();
+        List<Product> products = jsonHandler.readProducts();
         products.removeIf(p -> p.getUserId().equals(username));
-        xmlHandler.writeProducts(products);
+        jsonHandler.writeProducts(products);
     }
 }

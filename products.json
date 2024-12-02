@@ -1,0 +1,34 @@
+{
+    "products": [
+        {
+            "id": "8c272a3a-7c4b-4edc-be51-e2c1049bcd27",
+            "name": "water",
+            "price": 25.4,
+            "userId": "amrisamer54"
+        },
+        {
+            "id": "2e39a2c3-c66f-480d-829d-bd0957423690",
+            "name": "orange",
+            "price": 15.0,
+            "userId": "amrisamer54"
+        },
+        {
+            "id": "557d2599-baa3-44d2-a15d-dfed2b3480f6",
+            "name": "bottle of water",
+            "price": 10.0,
+            "userId": "hanaben07"
+        },
+        {
+            "id": "e6ab0c25-d3ea-42b7-97d7-5295b067506b",
+            "name": "Banana",
+            "price": 30.0,
+            "userId": "amrisamer54"
+        },
+        {
+            "id": "cc5502e1-6029-47ce-930d-6f6d02f4ecb8",
+            "name": "orange",
+            "price": 20.0,
+            "userId": "hanaben07"
+        }
+    ]
+}

@@ -1,42 +1,32 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
-/**
- * Service class to handle authentication logic.
- */
+
 public class AuthService {
-    private XMLHandler xmlHandler;
+    private JsonHandler JsonHandler;
+    private static final String USERS_FILE = "users.json";
+
     private User currentUser;
 
-    public AuthService(XMLHandler xmlHandler) {
-        this.xmlHandler = xmlHandler;
+    public AuthService(JsonHandler JsonHandler) {
+        this.JsonHandler = JsonHandler;
     }
 
-    /**
-     * Registers a new user.
-     * @param username The username of the new user.
-     * @param password The password of the new user.
-     * @param role The role of the new user.
-     * @return true if registration is successful, false if the user already exists.
-     */
+
     public boolean register(String username, String password, String email, String role) {
-        List<User> users = xmlHandler.readUsers();
+        List<User> users = JsonHandler.readUsers();
         for (User user : users) {
             if (user.getUsername().equals(username)) {
-                return false; // User already exists
+                return false;
             }
         }
         users.add(new User(username, password, email, "user"));
-        xmlHandler.writeUsers(users);
+        JsonHandler.writeUsers(users);
         return true;
     }
 
 
     public boolean isUsernameUnique(String username) {
-        List<User> users = xmlHandler.readUsers();
+        List<User> users = JsonHandler.readUsers();
         for (User user : users) {
             if (user.getUsername().equals(username)) {
                 return false;
@@ -47,11 +37,15 @@ public class AuthService {
 
 
     public User login(String email, String password) {
-        List<User> users = xmlHandler.readUsers();
+        List<User> users = JsonHandler.readUsers();
         for (User user : users) {
             if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                currentUser = user;
-                return user;
+                if ("admin".equals(user.getRole())) {
+                    currentUser = new Admin(user.getUsername(), user.getPassword(), user.getEmail());
+                } else {
+                    currentUser = user;
+                }
+                return currentUser;
             }
         }
         return null;

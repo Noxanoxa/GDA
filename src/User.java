@@ -8,6 +8,10 @@ public class User {
     private List<Product> products;
     private String role;
 
+    public User(){
+
+    }
+
     public User(String username, String password, String email, String role) {
         this.username = username;
         this.password = password;

@@ -3,12 +3,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
+
+
 public class ProductService {
-    private XMLHandler xmlHandler;
+    private JsonHandler jsonHandler;
+    private static final String PRODUCTS_FILE = "products.json";
+
     private AuthService authService;
 
-    public ProductService(XMLHandler xmlHandler, AuthService authService) {
-        this.xmlHandler = xmlHandler;
+    public ProductService(JsonHandler jsonHandler ,AuthService authService) {
+        this.jsonHandler = jsonHandler;
         this.authService = authService;
     }
 
@@ -16,14 +20,14 @@ public class ProductService {
     public void createProduct(Product product) {
         product.setId(generateUniqueId());
         product.setUserId(authService.getCurrentUser().getUsername());
-        List<Product> products = xmlHandler.readProducts();
+        List<Product> products = jsonHandler.readProducts();
         products.add(product);
-        xmlHandler.writeProducts(products);
+        jsonHandler.writeProducts(products);
     }
 
 
     public void editProduct(Product product) {
-        List<Product> products = xmlHandler.readProducts();
+        List<Product> products = jsonHandler.readProducts();
         for (Product p : products) {
             if (p.getId().equals(product.getId())) {
                 p.setName(product.getName());
@@ -31,30 +35,31 @@ public class ProductService {
                 break;
             }
         }
-        xmlHandler.writeProducts(products);
+        jsonHandler.writeProducts(products);
     }
 
     public void deleteProduct(String productId) {
-        List<Product> products = xmlHandler.readProducts();
+        List<Product> products = jsonHandler.readProducts();
         products.removeIf(p -> p.getId().equals(productId));
-        xmlHandler.writeProducts(products);
+        jsonHandler.writeProducts(products);
     }
 
 
     public List<Product> getAllProducts() {
-        return xmlHandler.readProducts().stream()
+        return jsonHandler.readProducts().stream()
                 .filter(p -> p.getUserId().equals(authService.getCurrentUser().getUsername()))
                 .collect(Collectors.toList());
     }
 
 
     public List<Product> searchProducts(String query) {
-        return xmlHandler.readProducts().stream()
+        return jsonHandler.readProducts().stream()
                 .filter(p -> p.getUserId().equals(authService.getCurrentUser().getUsername()) &&
                         (p.getName().toLowerCase().contains(query.toLowerCase()) ||
                                 String.valueOf(p.getPrice()).contains(query)))
                 .collect(Collectors.toList());
     }
+
 
 
 

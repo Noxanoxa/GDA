@@ -24,4 +24,10 @@
         <price>30.0</price>
         <userId>amrisamer54</userId>
     </product>
+    <product>
+        <id>cc5502e1-6029-47ce-930d-6f6d02f4ecb8</id>
+        <name>orange</name>
+        <price>20.0</price>
+        <userId>hanaben07</userId>
+    </product>
 </products>

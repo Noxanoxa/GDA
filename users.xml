@@ -18,4 +18,10 @@
         <email>hanaben07@gmail.com</email>
         <role>user</role>
     </user>
+    <user>
+        <username>samer</username>
+        <password>123</password>
+        <email>samer@gmail.com</email>
+        <role>user</role>
+    </user>
 </users>

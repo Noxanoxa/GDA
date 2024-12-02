@@ -72,8 +72,10 @@ public class UserForms {
             User user = authService.login(email, password);
             if (user != null) {
                 if (user instanceof Admin) {
+                    System.out.println("Admin");
                     new AdminForms(authService, productService).showAdminManagementScreen(frame);
                 } else {
+                    System.out.println("User");
                     new ProductForms(authService, productService).showProductManagementScreen(frame);
                 }
             } else {
